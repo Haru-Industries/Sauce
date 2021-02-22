@@ -1,0 +1,55 @@
+const Discord = require('discord.js')
+const ValidUrl = require('valid-url');
+const { saucenao } = require('./../config.json');
+const sagiri = require('sagiri');
+
+
+module.exports = {
+    name: 'gallery',
+    aliases: [ 'g' ],
+    description: 'fetches provided gallery pictures',
+    usage: '',
+    async execute(message, args) {
+      if (!message.channel.nsfw) {
+        message.channel.send(`Must be in a nsfw channel.`);
+        return;
+      } else{
+    if (args.length == 0){
+      if (message.attachments.size > 0) {
+      var url = (message.attachments).array()[0].url;
+    const client = sagiri("client", {results: 1});
+    const results = await client(url);
+    console.log(results);
+
+
+
+
+    } else {
+      message.channel.send(`I need either an embedded image or url.`)
+    }
+  } else if(ValidUrl.isUri(args[0])){
+
+    const client = sagiri("client", {results: 1});
+    const results = await client(args[0]);
+    console.log(results);
+
+  //args[0] is link
+
+    //message.channel.send(exampleEmbed);
+
+
+  } else {
+    message.channel.send(`No valid url or embedded image was found.`)
+  }
+    }
+  }
+}
+
+
+
+
+function replink(find,search) {
+  var rep = "{}";
+  var re = new RegExp(rep, "g");
+  return search.replace(re, find)
+}

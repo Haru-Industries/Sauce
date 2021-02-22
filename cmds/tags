@@ -1,0 +1,54 @@
+const Discord = require('discord.js');
+const { API, } = require('nhentai-api');
+const { version, } = require('./../config.json');
+
+
+module.exports = {
+    name: 'tags',
+    aliases: [ 't', 'details' ],
+    description: 'provides tags for specified gallery',
+    async execute(message, args) {
+      if (typeof(args[0]) == 'undefined'){
+        message.channel.send(`Up to a 6 digit number is required`);
+        return;
+      };
+    if (args[0].length <= 6){
+      const api = new API();
+      api.getBook(args[0]).then(book => {
+        var inttags = JSON.stringify(book.tags).toLowerCase().replace("[","").replace("]","").replace(/\\/g, "").split("},{");
+        var ftags = inttags.filter(name => name.includes('tag'));
+        var tcheck = JSON.stringify(ftags).replace("[","").replace("]","").replace(/\\/g, "").replace(/['|"]/g, "").split("},").filter(name => name.includes('name'));
+        var onlytags = JSON.stringify(tcheck).replace("[","").replace("]","").split(",").filter(name => name.includes('name'));
+        var finaltags = JSON.stringify(onlytags).replace("[","").replace("]","").replace(/\\/g, "").replace(/['|"]/g, "").split(":");
+        var finaltags = JSON.stringify(finaltags).replace("[","").replace("]","").replace(/\\/g, "").replace(/['|"]/g, "").split(",");
+        var stags = finaltags.filter(name => !name.includes('name'));
+        var fitags = JSON.stringify(stags).replace("[","").replace("]","").replace(/\\/g, "").replace(/['|"]/g, "").replace(/,/g, ", ")
+        //console.log(stags);
+        const exampleEmbed = new Discord.MessageEmbed()
+          .setColor('#EA28D4')
+          .setTitle(`Gallery information`)
+          .setDescription(`Tags for gallery ${args[0]}`)
+          //.setThumbnail()
+          .addFields(
+            //{ name: 'Sauce bot/system info', value: '\u200b' },
+            //{ name: '\u200B', value: '\u200B' },
+            { name: 'Gallery name', value: Object.values(book.title)},
+            { name: 'Tags', value: fitags, inline: true},
+            { name: 'Page count', value: Object.values(book.pages).length, inline: true },
+            //{ name: 'Favourited', value: book.favourites, inline: true},
+            { name: '\u200B', value: '\u200B', inline: true},
+            { name: 'Uploaded', value: book.uploaded, inline: true}
+          )
+          .setTimestamp()
+          .setFooter(`Sauce | ${version}`,`${message.client.user.displayAvatarURL()}`)
+
+        message.channel.send(exampleEmbed);
+
+        //message.channel.send(JSON.safeStringify(book), { split: true});
+        //console.log(book.pages)
+        //message.channel.send(`Tags for gallery ${args[0]}: ||${fitags}||`);
+
+
+      })} else {
+      message.channel.send(`Up to a 6 digit number is required`)
+    }}};

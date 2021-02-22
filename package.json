@@ -1,0 +1,27 @@
+{
+  "name": "joshj23-saucebot",
+  "version": "1.0.74",
+  "main": "index.js",
+  "dependencies": {
+    "@keyv/sqlite": "^2.0.2",
+    "discord.js": "^12.5.1",
+    "ffmpeg-static": "^4.2.7",
+    "keyv": "^4.0.3",
+    "moment-duration-format": "^2.3.2",
+    "nana-api": "^1.1.3",
+    "nhentai-api": "^3.0.2",
+    "node-sauce": "^1.0.5",
+    "npm": "^7.5.2",
+    "sagiri": "^3.0.5",
+    "sequelize": "^6.5.0",
+    "valid-url": "^1.0.9",
+    "ytdl-core": "^4.4.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "joshj23",
+  "license": "ISC",
+  "description": ""
+}

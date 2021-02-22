@@ -1,0 +1,100 @@
+const Discord = require('discord.js')
+const ValidUrl = require('valid-url');
+const { saucenao } = require('./../config.json');
+//const sagiri = require('sagiri');
+const Sauce = require('node-sauce');
+const { API, } = require('nhentai-api');
+//const NanaAPI = require('nana-api');
+
+
+module.exports = {
+    name: 'sauce',
+    aliases: [ 's' ],
+    description: 'Provides Sauce',
+    usage: '',
+    async execute(message, args) {
+      if (!message.channel.nsfw) {
+        message.channel.send(`Must be in a nsfw channel.`);
+        return;
+      } else{
+    if (args.length == 0){
+      if (message.attachments.size > 0) {
+      var url = (message.attachments).array()[0].url;
+    //  const client = sagiri(saucenao);
+      //const results = await client(url);
+      //console.log(results)
+
+
+    } else {
+      message.channel.send(`I need either an embedded image or url.`)
+    }
+  } else if(ValidUrl.isUri(args[0])){
+    //var res
+    //const client = sagiri(saucenao);
+    //console.log(args[0])
+    //const results = await client(args[0], {mask: [18]});
+    //message.channel.send(require('util').inspect(results), {split: true});
+    //console.log(results)
+    const sauce = new Sauce(saucenao);
+    sauce.dbmask = [18, 37, 29, 5]
+    sauce.numres = 1
+    //sauce(args[0]).then(result => message.channel.send(require('util').inspect(result), {split: true}));
+
+
+    sauce(args[0]).then(res => {
+      //console.log(Object.values(res));
+      var tostr = JSON.stringify(Object.values(res));
+      console.log(Object.values(res))
+      //var postsplit = tostr.replace("[","").replace("]","").replace(/\\/g, "").split('","');
+      var postsplit = tostr.replace("[","").replace("]","").replace(/\\/g, "").split('","');
+      var closegalname = postsplit[2].toString().split(":")[1];
+      var galname = closegalname.split('"');
+      try {
+      galname = galname.replace(/_/g,"");
+    } catch (e){
+      console.log(`no replace`)
+    }
+      message.channel.send(galname);
+      console.log(encodeURI(galname))
+    //  var api = new API();
+      //api.search(encodeURI(galname)).then(res => {
+        //console.log(res);
+      //})
+      //const nana = new NanaAPI();
+      //nana.search(galname).then((res) => {
+        //console.log(Object.values(res))
+      })
+      //console.log(galname)
+    //  const api = new API();
+    //  console.log(escapeRegExp(galname));
+      //api.search(galname).then(book => {
+        //console.log(book);
+        //message.channel.send(api.getImageURL(book.cover));
+        //message.channel.send(api.getImageURL(book.pages[1]));
+    //  })
+
+      //console.log(tosplit);
+    //});
+
+  //args[0] is link
+
+    //message.channel.send(exampleEmbed);
+
+
+  } else {
+    message.channel.send(`No valid url or embedded image was found.`)
+  }
+    }
+  }
+}
+
+//function escapeRegExp(input) {
+//	const source = typeof input === 'string' || input instanceof String ? input : '';
+//	return source.replace(/[-[/\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+//}
+
+function replink(find,search) {
+  var rep = "{}";
+  var re = new RegExp(rep, "g");
+  return search.replace(re, find)
+}
